@@ -13,14 +13,16 @@ Gem::Specification.new do |s|
   s.homepage    = "http://github.com/cmdrkeene/memegen"
   s.summary     = "Two-caption meme generator CLI"
   s.description = "Locally generate two-caption 'Advice Dog'-style meme images"
- 
+
   s.required_rubygems_version = ">= 1.3.6"
-  
+
   s.add_dependency("rmagick")
   s.add_dependency("tinder", "1.4.4")
   s.add_dependency("multipart-post")
   s.add_dependency("highlight")
- 
+  s.add_dependency("hipchat", "0.11.0")
+  s.add_dependency("aws-s3")
+
   s.files        = Dir.glob("{bin,lib,generators,fonts,script}/**/*") + %w(LICENSE README.md)
   s.executables  = ['memegen']
   s.require_path = 'lib'

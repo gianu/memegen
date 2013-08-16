@@ -5,16 +5,51 @@ $LOAD_PATH.unshift File.expand_path("../lib")
 $LOAD_PATH.unshift File.expand_path("../lib", __FILE__)
 
 require "meme_generator/cli"
+require "optparse"
 
-show_preview = ARGV.delete("show")
-campfire = ARGV.delete("--campfire") || ARGV.delete("-c")
-groupme = ARGV.delete("--groupme") || ARGV.delete("-g")
-help = ARGV.delete("--help") || ARGV.delete("-h")
-list = ARGV.delete("--list") || ARGV.delete("-l")
+show_preview = false
+campfire = false
+hipchat = false
+hipchat_channel = ""
+groupme = false
+help = false
+list = false
+
+OptionParser.new do |opts|
+  opts.banner = "Usage: "
+
+  opts.on("-s","--show","Show Preview") do |v|
+    show_preview = true
+  end
+
+  opts.on("-c", "--campfire", "Post to campfire") do |v|
+    campfire = true
+  end
+
+  opts.on("-t", "--hipchat CHANNEL", "Post to hipchat channel") do |channel|
+    hipchat = true
+    hipchat_channel = channel
+  end
+
+  opts.on("-g", "--groupme", "Post to groupme") do |v|
+    groupme = true
+  end
+
+  opts.on("-h", "--help", "Print help") do |v|
+    help = true
+  end
+
+  opts.on("-l", "--list", "Print available memes") do |v|
+    list = true
+  end
+
+  opts.on("-i", "--install-autocomplete", "Install autocomplete") do |v|
+    install_autocomplete
+  end
+end.parse!
 
 image, top, bottom = ARGV[0..2]
 
-install_autocomplete if ARGV.delete("--install-autocomplete")
 list_generators if list
 
 usage if help || ARGV.empty?
@@ -23,11 +58,12 @@ require "rubygems"
 require "meme_generator"
 require "meme_generator/campfire" if campfire
 require "meme_generator/groupme" if groupme
+require "meme_generator/hipchat" if hipchat
 
 path = parse_path(image)
 
 if show_preview
   system "open #{path} -a Preview"
 else
-  generate(path, top.to_s, bottom.to_s, campfire, groupme)
+  generate(path, top.to_s, bottom.to_s, campfire, groupme, hipchat, hipchat_channel)
 end
