@@ -1,4 +1,4 @@
-require_relative '../meme_generator.rb'
+require 'meme_generator'
 
 def images
   MemeGenerator.meme_paths.values
